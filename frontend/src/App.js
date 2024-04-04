@@ -30,9 +30,9 @@ export default function App() {
             pathOptions={{
               fillColor: 'green',
               fillOpacity: 0.1,
-              weight: 2,
+              weight: 3,
               opacity: 1,
-              dashArray: 3,
+              dashArray: 1,
               color: 'white'
             }}
             positions={coordinates}
@@ -52,8 +52,8 @@ export default function App() {
                 const layer = e.target;
                 layer.setStyle({
                   fillOpacity: 0.1,
-                  weight: 2,
-                  dashArray: "3",
+                  weight: 3,
+                  dashArray: "1",
                   color: 'white',
                   fillColor: 'green'
                 });
