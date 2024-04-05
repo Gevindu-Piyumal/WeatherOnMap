@@ -8,8 +8,7 @@ const postWeather = async (req, res) => {
     }
   
     try {
-      const timestamp = new Date();
-      await Weather.insertWeather(district, temperature, humidity, air_pressure, timestamp);
+      await Weather.insertWeather(district, temperature, humidity, air_pressure);
       res.status(201).json({ message: 'Weather data successfully added' });
     } catch (err) {
       res.status(500).json({ error: err.message });
