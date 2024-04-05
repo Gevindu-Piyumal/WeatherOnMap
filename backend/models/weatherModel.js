@@ -1,6 +1,6 @@
 const { sql, poolPromise } = require('../db');
 
-const insertWeather = async (district, temperature, humidity, air_pressure, timestamp) => {
+const insertWeather = async (district, temperature, humidity, air_pressure) => {
   try {
     const pool = await poolPromise;
     const result = await pool
@@ -9,8 +9,7 @@ const insertWeather = async (district, temperature, humidity, air_pressure, time
       .input('temperature', sql.Decimal(5, 2), temperature)
       .input('humidity', sql.Decimal(5, 2), humidity)
       .input('air_pressure', sql.Decimal(7, 2), air_pressure)
-      .input('timestamp', sql.DateTime, timestamp)
-      .query('INSERT INTO Weather (district, temperature, humidity, air_pressure, timestamp) VALUES (@district, @temperature, @humidity, @air_pressure, @timestamp)');
+      .query('INSERT INTO Weather (district, temperature, humidity, air_pressure) VALUES (@district, @temperature, @humidity, @air_pressure)');
     console.log('Weather data inserted successfully');
   } catch (err) {
     throw new Error(`Error inserting weather data: ${err}`);
@@ -22,7 +21,7 @@ const getLatestWeather = async () => {
     const pool = await poolPromise;
     const result = await pool
       .request()
-      .query('SELECT DISTINCT district, temperature, humidity, air_pressure, timestamp FROM weather ORDER BY timestamp DESC');
+      .query('WITH LatestWeather AS (SELECT district, temperature, humidity, air_pressure, timestamp, ROW_NUMBER() OVER (PARTITION BY district ORDER BY timestamp DESC) AS rn FROM weather ) SELECT district, temperature, humidity, air_pressure, timestamp FROM LatestWeather WHERE rn = 1; ');
     return result.recordset;
   } catch (err) {
     throw new Error(`Error getting latest weather data: ${err}`);

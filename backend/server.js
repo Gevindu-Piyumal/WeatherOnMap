@@ -6,7 +6,7 @@ const PORT = process.env.PORT;
 
 app.use(express.json());
 
-// Define routes
+// routes
 app.get('/', (req,res) => {
     res.json({message:"WeatherOnMap"})
 })
