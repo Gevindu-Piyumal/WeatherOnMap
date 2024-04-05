@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Polygon, Tooltip } from 'react-leaflet';
-// import { formatDistanceToNow, format, formatDistance, formatRelative, subDays } from 'date-fns'
 import 'leaflet/dist/leaflet.css';
 import { DistrictBorderData } from './data';
 import './App.css';

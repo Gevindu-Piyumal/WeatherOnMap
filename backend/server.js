@@ -1,5 +1,6 @@
 const express = require('express');
 const weatherRoutes = require('./routes/weatherRoute');
+const cronJobs = require('./cronJob');
 
 const app = express();
 const PORT = process.env.PORT;
