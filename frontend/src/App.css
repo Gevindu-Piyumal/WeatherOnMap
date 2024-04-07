@@ -1,0 +1,31 @@
+table.district-table {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.district-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table.district-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+table.district-table tr:hover {
+    background-color: #ddd;
+}
+
+.last-records-table {
+    height: 20vh !important;
+    overflow: scroll;
+    background-color: wheat;
+}
+
+.HeaderDiv {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    padding-top: 20px;
+}
