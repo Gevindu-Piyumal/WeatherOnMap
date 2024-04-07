@@ -1,6 +1,7 @@
 const express = require('express');
 const weatherRoutes = require('./routes/weatherRoute');
 const cronJobs = require('./cronJob');
+var cors = require('cors')
 
 const app = express();
 const PORT = process.env.PORT;
@@ -13,6 +14,7 @@ app.get('/', (req,res) => {
 })
 
 app.use('/api/weather', weatherRoutes);
+app.use(cors({origin:"https://venerable-fenglisu-8db204.netlify.app"}))
 
 // Listen for requests
 app.listen(PORT, () => {

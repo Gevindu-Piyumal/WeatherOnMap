@@ -7,7 +7,8 @@ import { fetchLatestWeatherData, fetchLastRecords } from './api';
 
 export default function App() {
   const [latestWeatherData, setLatestWeatherData] = useState([]);
-  const [lastRecords, setLastRecords] = useState(null);
+  const [lastRecords, setLastRecords] = useState([]);
+  const [showModal, setShowModal] = useState(false);
   const center = [7.8731, 80.7718];
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export default function App() {
   const handleDistrictClick = async (districtName) => {
     try {
       const data = await fetchLastRecords(districtName, 10);
+      setShowModal(!showModal);
       setLastRecords(data);
     } catch (error) {
       console.error(`Error fetching last records for ${districtName}:`, error);
@@ -34,75 +36,91 @@ export default function App() {
   };
 
   return (
-    <MapContainer
-      center={center}
-      zoom={8}
-      style={{ width: '100vw', height: '100vh' }}
-    >
+    <div style={{ width: '100vw' }}>
+      <MapContainer
+        center={center}
+        zoom={7}
+        style={{ width: '100vw', height: '80vh' }}
+      >
 
-      <TileLayer
-        url="https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=TRf2ueSa5fdmCgl7S2Pm"
-        attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
-      />
-      {
-        DistrictBorderData.features.map((district) => {
-          const coordinates = district.geometry.coordinates[0].map((item) => [item[1], item[0]]);
-          const weather = latestWeatherData.find((item) => item.district === district.name);
-          return (
-            <Polygon
-              pathOptions={{
-                fillColor: 'green',
-                fillOpacity: 0.1,
-                weight: 3,
-                opacity: 1,
-                dashArray: 1,
-                color: 'white'
-              }}
-              positions={coordinates}
-              eventHandlers={{
-                mouseover: (e) => {
-                  const layer = e.target;
-                  layer.setStyle({
-                    dashArray: "",
-                    fillColor: "green",
-                    fillOpacity: 0.3,
-                    weight: 2,
-                    opacity: 1,
-                    color: "white",
-                  })
-                },
-                mouseout: (e) => {
-                  const layer = e.target;
-                  layer.setStyle({
-                    fillOpacity: 0.1,
-                    weight: 3,
-                    dashArray: "1",
-                    color: 'white',
-                    fillColor: 'green'
-                  });
-                },
-                click: (e) => {
-                  handleDistrictClick(district.name);
-                  console.log(lastRecords);
-                }
-              }}
-            >
-              <Tooltip>
-                {
-                  weather && (
-                    <div className="weather-card">
-                      <h2>{weather.district}</h2>
-                      <p><b>Temperature:</b> {weather.temperature} °C</p>
-                      <p><b>Humidity:</b> {weather.humidity}%</p>
-                      <p><b>Air Pressure:</b> {weather.air_pressure} hPa</p>
-                      <p><b>Last updated at:</b> {new Date(weather.timestamp).toLocaleString()}</p>
-                    </div>
-                  )
-                }
-              </Tooltip>
-            </Polygon>)
-        })
-      }
-    </MapContainer>
+        <TileLayer
+          url="https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=TRf2ueSa5fdmCgl7S2Pm"
+          attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
+        />
+        {
+          DistrictBorderData.features.map((district) => {
+            const coordinates = district.geometry.coordinates[0].map((item) => [item[1], item[0]]);
+            const weather = latestWeatherData.find((item) => item.district === district.name);
+            return (
+              <Polygon
+                pathOptions={{
+                  fillColor: 'green',
+                  fillOpacity: 0.1,
+                  weight: 3,
+                  opacity: 1,
+                  dashArray: 1,
+                  color: 'white'
+                }}
+                positions={coordinates}
+                eventHandlers={{
+                  mouseover: (e) => {
+                    const layer = e.target;
+                    layer.setStyle({
+                      dashArray: "",
+                      fillColor: "green",
+                      fillOpacity: 0.3,
+                      weight: 2,
+                      opacity: 1,
+                      color: "white",
+                    })
+                  },
+                  mouseout: (e) => {
+                    const layer = e.target;
+                    layer.setStyle({
+                      fillOpacity: 0.1,
+                      weight: 3,
+                      dashArray: "1",
+                      color: 'white',
+                      fillColor: 'green'
+                    });
+                  },
+                  click: (e) => {
+                    handleDistrictClick(district.name);
+
+                    console.log(lastRecords);
+                  }
+                }}
+              >
+                <Tooltip>
+                  {
+                    weather && (
+                      <div className="weather-card">
+                        <h2>{weather.district}</h2>
+                        <p><b>Temperature:</b> {weather.temperature} °C</p>
+                        <p><b>Humidity:</b> {weather.humidity}%</p>
+                        <p><b>Air Pressure:</b> {weather.air_pressure} hPa</p>
+                        <p><b>Last updated at:</b> {new Date(weather.timestamp).toLocaleString()}</p>
+                      </div>
+                    )
+                  }
+                </Tooltip>
+              </Polygon>)
+          })
+        }
+      </MapContainer>
+      {lastRecords.length > 0 ? (
+        <div className="last-records-table">
+          <table className="district-table">
+            <tbody>{lastRecords.map((item) => {
+              return <tr><td className="tb-district">{item.district}</td><td className="tb-temp">{item.temperature}</td><td className="tb-hum">{item.humidity}</td><td className="tb-air">{item.air_pressure}</td><td className="tb-time">{new Date(item.timestamp).toLocaleString()}</td></tr>
+            })}
+            </tbody>
+          </table>
+
+        </div>
+      ) : <div className="HeaderDiv">Please click on a district</div>}
+
+    </div>
+
   );
 }
