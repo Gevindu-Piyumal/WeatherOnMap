@@ -1,6 +1,6 @@
 export async function fetchLatestWeatherData() {
     try {
-        const response = await fetch('https://weatheronmap.onrender.com/api/weather');
+        const response = await fetch('/api/weather');
         const data = await response.json();
         return data;
     } catch (error) {
@@ -11,7 +11,7 @@ export async function fetchLatestWeatherData() {
 
 export async function fetchLastRecords(districtName,records) {
     try {
-      const response = await fetch(`https://weatheronmap.onrender.com/api/weather/${districtName}/${records}`);
+      const response = await fetch(`/api/weather/${districtName}/${records}`);
       const data = await response.json();
       return data;
     } catch (error) {
