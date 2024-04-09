@@ -6,6 +6,11 @@ var cors = require('cors')
 const app = express();
 const PORT = process.env.PORT;
 
+app.use(cors({
+  origin: "https://venerable-fenglisu-8db204.netlify.app",
+  methods: ['GET']
+}));
+
 app.use(express.json());
 
 // routes
@@ -14,10 +19,6 @@ app.get('/', (req,res) => {
 })
 
 app.use('/api/weather', weatherRoutes);
-app.use(cors({
-  origin: "https://venerable-fenglisu-8db204.netlify.app",
-  methods: ['GET']
-}));
 
 // Listen for requests
 app.listen(PORT, () => {
